@@ -1,0 +1,69 @@
+syntax = "v1"
+
+type DemoRequest {
+	Name string `path:"name,options=you|me"`
+}
+
+type AccountRequest {
+	EthAddr string `path:"ethAddr"`
+}
+
+type TradeRequest {
+	SourceAddr string `json:"sourceAddr"`
+	TargetAddr string `json:"targetAddr"`
+	Amount     int64  `json:"amount"`
+	Price      int    `json:"price"`
+	PrivateKey string `json:"privateKey"`
+}
+
+type TradeInfoRequest {
+	TxHash string `form:"tx_hash"`
+}
+
+type BlockInfoRequest {
+	BlockId int64 `form:"block_id"`
+}
+
+type ERC20TransferRequest {
+	ToAddress       string `json:"ethAddress"`
+	Amount          int64  `json:"amount"`
+	ContractAddress string `json:"contractAddress"`
+	PrivateKey      string `json:"privateKey"`
+	ContractCode    string `json:"contractCode"`
+}
+
+type ERC20TransferInfoRequest {
+	ContractAddress string `form:"contractAddress"`
+	StartBlock      int64  `form:"startBlock"`
+	EndBlock        int64  `form:"endBlock"`
+}
+
+type Response {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+service demo-api {
+	@handler DemoHandler
+	get /from/:name (DemoRequest) returns (Response)
+
+	@handler AccountInfoHandler
+	get /account/info/:ethAddr (AccountRequest) returns (Response)
+
+	@handler EthTradeHandler
+	post /eth/trade (TradeRequest) returns (Response)
+
+	@handler EthTradeInfoHandler
+	get /eth/trade/info (TradeInfoRequest) returns (Response)
+
+	@handler BlockInfoHandler
+	get /eth/block/info (BlockInfoRequest) returns (Response)
+
+	@handler ERC20TransferHandler
+	post /erc20/transfer (ERC20TransferRequest) returns (Response)
+
+	@handler ERC20TransferInfoHandler
+	get /erc20/transfer/info (ERC20TransferInfoRequest) returns (Response)
+}
+

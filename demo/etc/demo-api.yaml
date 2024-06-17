@@ -1,0 +1,7 @@
+Name: demo-api
+Host: 0.0.0.0
+Port: 8888
+
+ethClient:
+  BaseUrl: https://sepolia.infura.io/v3/79f1e5ee29ac48c093b81728db232aeb
+  #BaseUrl: https://mainnet.infura.io/v3/79f1e5ee29ac48c093b81728db232aeb
