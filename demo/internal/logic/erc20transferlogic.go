@@ -41,15 +41,14 @@ func (l *ERC20TransferLogic) ERC20Transfer(req *types.ERC20TransferRequest) (res
 	}
 	defer client.Close()
 
+	l.Logger.WithContext(l.ctx).Info("start a erc20 transfer......")
 	// 发送方地址和私钥（用于签名交易）
 	fromPrivateKeyHex := req.PrivateKey
-
 	privateKey, err := crypto.HexToECDSA(fromPrivateKeyHex)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	//
 	contractABI, err := abi.JSON(strings.NewReader(erc20baseAbi))
 	if err != nil {
 		log.Fatalf("Failed to parse contract ABI: %v", err)
@@ -59,7 +58,7 @@ func (l *ERC20TransferLogic) ERC20Transfer(req *types.ERC20TransferRequest) (res
 	toAddress := common.HexToAddress(req.ToAddress)
 	data, err := contractABI.Pack("transfer", toAddress, big.NewInt(req.Amount))
 	if err != nil {
-
+		l.Logger.WithContext(l.ctx).Errorf("error is %s", err.Error())
 		return nil, err
 	}
 
@@ -103,6 +102,9 @@ func (l *ERC20TransferLogic) ERC20Transfer(req *types.ERC20TransferRequest) (res
 		log.Fatal(err)
 		return
 	}
+
+	resp = new(types.Response)
+	resp.Data = signedTx.Hash().Hex()
 	return
 }
 
